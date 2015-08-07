@@ -45,13 +45,12 @@ class LogStash::Filters::Uuid < LogStash::Filters::Base
     return unless filter?(event)
 
     if overwrite
-      event[target] = SecureRandom.uuid
+      event[target] = SecureRandom.uuid.force_encoding("UTF-8")
     else
-      event[target] ||= SecureRandom.uuid
+      event[target] ||= SecureRandom.uuid.force_encoding("UTF-8")
     end
 
     filter_matched(event)
   end # def filter
 
 end # class LogStash::Filters::Uuid
-
