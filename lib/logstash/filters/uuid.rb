@@ -42,7 +42,7 @@ class LogStash::Filters::Uuid < LogStash::Filters::Base
 
   public
   def filter(event)
-    return unless filter?(event)
+    
 
     if overwrite
       event[target] = SecureRandom.uuid
