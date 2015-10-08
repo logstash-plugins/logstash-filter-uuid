@@ -43,11 +43,13 @@ class LogStash::Filters::Uuid < LogStash::Filters::Base
   public
   def filter(event)
     
-
+    # SecureRandom.uuid returns a non UTF8 string and since
+    # only UTF8 strings can be passed to a LogStash::Event
+    # we need to reencode it here
     if overwrite
-      event[target] = SecureRandom.uuid
+      event[target] = SecureRandom.uuid.force_encoding(Encoding::UTF_8)
     else
-      event[target] ||= SecureRandom.uuid
+      event[target] ||= SecureRandom.uuid.force_encoding(Encoding::UTF_8)
     end
 
     filter_matched(event)
