@@ -18,10 +18,9 @@ describe LogStash::Filters::Uuid do
   end
 
   describe "generation" do
-
     it "should generate an uuid field" do
       subject.filter(event)
-      expect(event[target]).not_to be_nil
+      expect(event.get(target)).not_to be_nil
     end
 
     context "with overwrite" do
@@ -31,10 +30,8 @@ describe LogStash::Filters::Uuid do
 
       it "should override the target field" do
         subject.filter(event)
-        expect(event[target]).not_to eq("foo")
+        expect(event.get(target)).not_to eq("foo")
       end
     end
-
   end
-
 end
