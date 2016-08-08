@@ -3,21 +3,31 @@ require "logstash/filters/base"
 require "logstash/namespace"
 require "securerandom"
 
-# The uuid filter allows you to add a `UUID` field to messages.
-# This is useful to be able to control the `_id` messages are indexed into Elasticsearch
-# with, so that you can insert duplicate messages (i.e. the same message multiple times
-# without creating duplicates) - for log pipeline reliability
+# The uuid filter allows you to generate a
+# https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID]
+# and add it as a field to each processed event.
 #
+# This is useful if you need to generate a string that's unique for every
+# event, even if the same input is processed multiple times. If you want
+# to generate strings that are identical each time a event with a given
+# content is processed (i.e. a hash) you should use the
+# <<plugins-filters-fingerprint,fingerprint filter>> instead.
+#
+# The generated UUIDs follow the version 4 definition in
+# https://tools.ietf.org/html/rfc4122[RFC 4122]) and will be
+# represented as a standard hexadecimal string format, e.g.
+# "e08806fe-02af-406c-bbde-8a5ae4475e57".
 class LogStash::Filters::Uuid < LogStash::Filters::Base
   config_name "uuid"
 
-  # Add a UUID to a field.
+  # Select the name of the field where the generated UUID should be
+  # stored.
   #
   # Example:
   # [source,ruby]
   #     filter {
   #       uuid {
-  #         target => "@uuid"
+  #         target => "uuid"
   #       }
   #     }
   config :target, :validate => :string, :required => true
@@ -30,7 +40,7 @@ class LogStash::Filters::Uuid < LogStash::Filters::Base
   # [source,ruby]
   #    filter {
   #       uuid {
-  #         target    => "@uuid"
+  #         target    => "uuid"
   #         overwrite => true
   #       }
   #    }
